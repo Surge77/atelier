@@ -1,0 +1,111 @@
+[project]
+name = "atelier"
+version = "0.1.0"
+description = "Multi-agent AI chatbot that analyses document and presentation templates, researches, and generates editable DOCX and PPTX in the template's own style."
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "MIT" }
+
+dependencies = [
+    # --- API layer ---
+    "fastapi==0.141.1",
+    "uvicorn[standard]==0.53.0",
+    "python-multipart==0.0.32",
+    "sse-starlette==3.4.11",
+    "pydantic==2.13.5",
+    "pydantic-settings==2.15.0",
+
+    # --- Persistence ---
+    "SQLAlchemy==2.0.54",
+
+    # --- Document ingestion ---
+    # pypdf reads text; pypdfium2 rasterises pages for the vision-OCR path.
+    # Deliberately not PyMuPDF: it is AGPL-3.0.
+    "python-docx==1.2.0",
+    "python-pptx==1.0.2",
+    "pypdf==6.19.0",
+    "pypdfium2==5.13.0",
+    "pillow==12.3.0",
+
+    # --- Retrieval ---
+    "chromadb==1.5.9",
+    "fastembed==0.8.0",
+
+    # --- LLM providers (all three adapters ship; one is selected at runtime) ---
+    "groq==1.7.0",
+    "openai==3.16.2",
+    "anthropic==1.7.0",
+
+    # --- Web research ---
+    "httpx==0.28.1",
+    "beautifulsoup4==4.15.0",
+]
+
+[project.optional-dependencies]
+# Pinecone is only needed when ATELIER_VECTOR_BACKEND=pinecone.
+pinecone = ["pinecone==10.0.0"]
+# Tavily is optional; the keyless DuckDuckGo provider is the fallback.
+tavily = ["tavily-python==0.8.4"]
+ui = ["streamlit==1.64.0"]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-asyncio==1.4.0",
+    "respx==0.23.1",
+    "ruff==0.16.8",
+    "pyright==1.1.407",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend/app"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+addopts = "-q --strict-markers"
+markers = [
+    "integration: exercises more than one module together",
+    "live: requires real network or API credentials; excluded from CI",
+]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["backend/app"]
+omit = [
+    "backend/app/llm/groq_provider.py",
+    "backend/app/llm/openai_provider.py",
+    "backend/app/llm/anthropic_provider.py",
+    "backend/app/rag/pinecone_store.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
+
+[tool.pyright]
+include = ["backend", "frontend"]
+exclude = ["**/__pycache__", ".venv"]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "standard"
+reportMissingTypeStubs = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "PTH", "RUF"]
+ignore = ["B008"]  # FastAPI Depends() in defaults is the documented idiom.
+
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]

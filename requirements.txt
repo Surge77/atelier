@@ -1,0 +1,57 @@
+# Atelier — all runtime dependencies, exact-pinned.
+#
+#   pip install -r requirements.txt
+#
+# Everything below is required to run the backend and the Streamlit UI.
+# Optional extras (Pinecone, Tavily) are at the bottom and commented out —
+# the app runs fully without them using the local/keyless defaults.
+
+# --- API layer ---
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-multipart==0.0.32
+sse-starlette==3.4.11
+pydantic==2.13.5
+pydantic-settings==2.15.0
+
+# --- Persistence ---
+SQLAlchemy==2.0.54
+
+# --- Document ingestion ---
+# pypdf reads PDF text; pypdfium2 rasterises pages for the vision-OCR path.
+# PyMuPDF is deliberately avoided: it is AGPL-3.0 licensed.
+python-docx==1.2.0
+python-pptx==1.0.2
+pypdf==6.19.0
+pypdfium2==5.13.0
+pillow==12.3.0
+
+# --- Retrieval (local, no API key required) ---
+chromadb==1.5.9
+fastembed==0.8.0
+
+# --- LLM providers: all three adapters ship, one is chosen via ATELIER_LLM_PROVIDER ---
+groq==1.7.0
+openai==3.16.2
+anthropic==1.7.0
+
+# --- Web research ---
+httpx==0.28.1
+beautifulsoup4==4.15.0
+
+# --- Chat UI ---
+streamlit==1.64.0
+
+# --- Development / test ---
+pytest==9.1.1
+pytest-cov==7.1.0
+pytest-asyncio==1.4.0
+respx==0.23.1
+ruff==0.16.8
+pyright==1.1.407
+
+# --- Optional: managed vector database (ATELIER_VECTOR_BACKEND=pinecone) ---
+# pinecone==10.0.0
+
+# --- Optional: managed web search (ATELIER_SEARCH_PROVIDER=tavily) ---
+# tavily-python==0.8.4
