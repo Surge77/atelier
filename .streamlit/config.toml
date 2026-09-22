@@ -1,0 +1,19 @@
+# Streamlit's default primary colour is #FF4B4B — a danger red applied to
+# ordinary primary actions. Using the danger hue for non-destructive controls
+# misreads at a glance, so the palette below is set explicitly.
+
+[theme]
+base = "light"
+# Slate blue: reads as a primary action, not a warning.
+primaryColor = "#1B365D"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F6F9"
+textColor = "#1A1D21"
+font = "sans serif"
+
+[server]
+headless = true
+maxUploadSize = 25
+
+[browser]
+gatherUsageStats = false
