@@ -25,7 +25,7 @@ dependencies = [
     "python-pptx==1.0.2",
     "pypdf==6.19.0",
     "pypdfium2==5.13.0",
-    "pillow==12.3.0",
+    "pillow==13.0.0",
 
     # --- Retrieval ---
     "chromadb==1.5.9",
